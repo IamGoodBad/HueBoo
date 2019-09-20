@@ -60,7 +60,7 @@ class RootViewController: UIViewController, RootPresentable, RootCollectionViewL
         if Constants.getTextColor(from: color) == .white {
             statusBarStyle = .lightContent
         } else {
-            statusBarStyle = .default
+            statusBarStyle = .default // I'm not 100% sure this is doing what you expect it to do. This seems to hide the status bar content so while I'm swiping through the status bar appears to be flashing on and off.
         }
         
         UIView.animate(withDuration: 0.3) {
@@ -71,13 +71,13 @@ class RootViewController: UIViewController, RootPresentable, RootCollectionViewL
     private func setupViews() {
         
         collectionView.listener = self
-        collectionView.backgroundColor = .red
+        collectionView.backgroundColor = .red // when I swipe back on the first cell I can see this. Might be better to use black as a default?
         
         view.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             collectionView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
             collectionView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor)
             ])

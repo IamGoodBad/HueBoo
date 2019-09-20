@@ -16,15 +16,10 @@ struct ColorSet: Equatable {
     let alpha: CGFloat
     
     init(initialColor: UIColor) {
-        var hue: CGFloat = 0
-        var saturation: CGFloat = 0
-        var brightness: CGFloat = 0
-        var alpha: CGFloat = 1
+        var hue, saturation, brightness, alpha: CGFloat
+        (hue, saturation, brightness, alpha) = (0,0,0,0)
         initialColor.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
-        self.hue = hue
-        self.saturation = saturation
-        self.brightness = brightness
-        self.alpha = alpha
+        self.init(hue: hue, saturation: saturation, brightness: brightness, alpha: alpha)
     }
     
     init(hue: CGFloat, saturation: CGFloat, brightness: CGFloat, alpha: CGFloat = 1) {
