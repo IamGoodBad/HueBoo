@@ -1,4 +1,4 @@
-//
+    //
 //  RootInteractorTests.swift
 //  HueBooTests
 //
