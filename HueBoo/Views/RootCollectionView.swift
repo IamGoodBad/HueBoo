@@ -16,7 +16,7 @@ protocol RootCollectionViewListening: class {
 }
 
 class RootCollectionView: UICollectionView {
-    
+        
     weak var listener: RootCollectionViewListening?
     
     init() {
@@ -37,7 +37,7 @@ class RootCollectionView: UICollectionView {
     }
     
     func insertItem(at indexPath: IndexPath) {
-        reloadData()
+        insertItems(at: [indexPath])
         scrollToItem(at: indexPath, at: .right, animated: true)
     }
     
