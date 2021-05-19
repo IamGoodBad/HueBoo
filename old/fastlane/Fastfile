@@ -1,0 +1,90 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+
+  desc "Send HueBoo to AppStore."
+  lane :release_to_appstore do
+    build_for_apple_distribution
+    deliver(
+      automatic_release: true,
+      force: true,
+      overwrite_screenshots: true,
+      reject_if_possible: true,
+      run_precheck_before_submit: false,
+      screenshots_path: "./docs",
+      submit_for_review: true,
+      submission_information: {
+        export_compliance_platform: 'ios',
+        export_compliance_compliance_required: false,
+        export_compliance_encryption_updated: false,
+        export_compliance_uses_encryption: false,
+        export_compliance_contains_third_party_cryptography: false,
+        export_compliance_contains_proprietary_cryptography: false,
+        export_compliance_available_on_french_store: false
+      }
+    )
+  end
+
+  desc "Send HueBoo to TestFlight."
+  lane :release_to_testflight do
+    build_for_apple_distribution
+    pilot(
+      ipa: "./fastlane/apple_build/HueBoo.ipa",
+      skip_waiting_for_build_processing: false,
+      changelog: "Version {lane_context[SharedValues: VERSION_NUMBER]}, Build {lane_context[SharedValues: BUILD_NUMBER]}",
+      uses_non_exempt_encryption: false
+    )
+  end
+
+  desc "Build for either TestFlight or AppStore"
+  lane :build_for_apple_distribution do
+    precheck
+    unit_test
+    ui_test
+    create_screenshots
+    match_with_options(type: "appstore")
+    increment_build_number(build_number: Time.now.to_i)
+    gym(
+      output_directory: "./fastlane/apple_build",
+      export_method: "app-store"
+    )
+  end
+
+  desc "Resolve Signing Certificates and Provisioning Profiles."
+  lane :match_with_options do |options|
+    matchType = options[:type]
+    match(type: matchType, readonly: true)
+  end
+
+  desc "Create and Frame Screenshots of HueBoo."
+  lane :create_screenshots do
+    snapshot
+    frameit(path: "./docs", rose_gold: true)
+  end
+
+  desc "Unit Test HueBoo."
+  lane :unit_test do
+    scan(only_testing: "HueBooTests")
+  end
+
+  desc "UI Test HueBoo."
+  lane :ui_test do
+    scan(only_testing: "HueBooUITests")
+  end
+
+end
